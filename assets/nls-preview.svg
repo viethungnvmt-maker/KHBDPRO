@@ -1,0 +1,114 @@
+<svg width="1280" height="760" viewBox="0 0 1280 760" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="pageBg" x1="640" y1="0" x2="640" y2="760" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#10233B"/>
+      <stop offset="1" stop-color="#091321"/>
+    </linearGradient>
+    <linearGradient id="headerBg" x1="0" y1="0" x2="1280" y2="120" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0F172A"/>
+      <stop offset="1" stop-color="#1E293B"/>
+    </linearGradient>
+    <linearGradient id="panelBg" x1="120" y1="120" x2="520" y2="620" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#111E33"/>
+      <stop offset="1" stop-color="#17263B"/>
+    </linearGradient>
+    <linearGradient id="sidebarBg" x1="950" y1="120" x2="1210" y2="520" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#173B66"/>
+      <stop offset="1" stop-color="#0F2744"/>
+    </linearGradient>
+    <linearGradient id="blueBtn" x1="0" y1="0" x2="780" y2="0" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#2563EB"/>
+      <stop offset="1" stop-color="#3B82F6"/>
+    </linearGradient>
+    <linearGradient id="logoBg" x1="0" y1="0" x2="48" y2="48" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#3B82F6"/>
+      <stop offset="1" stop-color="#60A5FA"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1280" height="760" rx="40" fill="url(#pageBg)"/>
+  <rect width="1280" height="74" fill="url(#headerBg)"/>
+  <rect x="0" y="73" width="1280" height="1" fill="#1E3A5F"/>
+
+  <g transform="translate(18 14)">
+    <rect width="44" height="44" rx="12" fill="url(#logoBg)"/>
+    <path d="M18 31L29 20" stroke="white" stroke-width="5" stroke-linecap="round"/>
+    <path d="M13 36L18 31" stroke="white" stroke-width="5" stroke-linecap="round"/>
+    <path d="M10 25V18" stroke="white" stroke-width="3.4" stroke-linecap="round"/>
+    <path d="M6.5 21.5H13.5" stroke="white" stroke-width="3.4" stroke-linecap="round"/>
+    <path d="M31 14V10" stroke="white" stroke-width="3" stroke-linecap="round"/>
+    <path d="M28.5 12H33.5" stroke="white" stroke-width="3" stroke-linecap="round"/>
+    <path d="M35 27V24" stroke="white" stroke-width="2.6" stroke-linecap="round"/>
+    <path d="M32.5 25.5H37.5" stroke="white" stroke-width="2.6" stroke-linecap="round"/>
+  </g>
+
+  <text x="76" y="34" fill="#F8FAFC" font-family="Inter, Arial, sans-serif" font-size="31" font-weight="700">SOAN GIAO AN NANG LUC SO</text>
+  <text x="76" y="58" fill="#94A3B8" font-family="Inter, Arial, sans-serif" font-size="15">Ho tro tich hop Nang luc so toan cap</text>
+
+  <rect x="860" y="18" width="232" height="38" rx="10" stroke="#EF4444" fill="#EF4444" fill-opacity="0.06"/>
+  <text x="886" y="42" fill="#EF4444" font-family="Inter, Arial, sans-serif" font-size="15" font-weight="600">Lay API key de su dung app</text>
+  <text x="1118" y="42" fill="#94A3B8" font-family="Inter, Arial, sans-serif" font-size="15">Powered by Gemini</text>
+
+  <rect x="36" y="108" width="870" height="602" rx="24" fill="url(#panelBg)" stroke="#1E3A5F"/>
+  <text x="76" y="160" fill="#60A5FA" font-family="Inter, Arial, sans-serif" font-size="26" font-weight="600">Thong tin Ke hoach bai day</text>
+  <rect x="60" y="180" width="420" height="48" rx="10" fill="#0F172A" stroke="#2563EB"/>
+  <rect x="496" y="180" width="376" height="48" rx="10" fill="#0F172A" stroke="#2563EB"/>
+  <text x="84" y="211" fill="#F8FAFC" font-family="Inter, Arial, sans-serif" font-size="20">Toan</text>
+  <text x="520" y="211" fill="#F8FAFC" font-family="Inter, Arial, sans-serif" font-size="20">Lop 7</text>
+
+  <text x="76" y="280" fill="#60A5FA" font-family="Inter, Arial, sans-serif" font-size="26" font-weight="600">Tai lieu dau vao</text>
+  <text x="60" y="322" fill="#94A3B8" font-family="Inter, Arial, sans-serif" font-size="18">File Giao an *</text>
+  <text x="520" y="322" fill="#94A3B8" font-family="Inter, Arial, sans-serif" font-size="18">Khung nang luc so</text>
+
+  <rect x="60" y="338" width="420" height="208" rx="16" fill="#0F172A" stroke="#3B82F6" stroke-dasharray="10 8"/>
+  <rect x="496" y="338" width="376" height="208" rx="16" fill="#0F172A" stroke="#3B82F6" stroke-dasharray="10 8"/>
+
+  <rect x="254" y="388" width="52" height="52" rx="14" fill="#142A49"/>
+  <path d="M280 402V425" stroke="#4FA5FF" stroke-width="4" stroke-linecap="round"/>
+  <path d="M270 412L280 402L290 412" stroke="#4FA5FF" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="212" y="476" fill="#F8FAFC" font-family="Inter, Arial, sans-serif" font-size="20" font-weight="600">Tai len Giao an</text>
+  <text x="176" y="506" fill="#94A3B8" font-family="Inter, Arial, sans-serif" font-size="16">Giao an bai day can tich hop</text>
+  <rect x="224" y="526" width="112" height="28" rx="14" fill="#173457"/>
+  <text x="242" y="545" fill="#60A5FA" font-family="Inter, Arial, sans-serif" font-size="14">.docx, .pdf</text>
+
+  <rect x="654" y="388" width="52" height="52" rx="14" fill="#142A49"/>
+  <rect x="669" y="402" width="24" height="30" rx="3" stroke="#4FA5FF" stroke-width="3"/>
+  <path d="M675 412H687" stroke="#4FA5FF" stroke-width="3" stroke-linecap="round"/>
+  <path d="M675 420H687" stroke="#4FA5FF" stroke-width="3" stroke-linecap="round"/>
+  <text x="600" y="476" fill="#F8FAFC" font-family="Inter, Arial, sans-serif" font-size="20" font-weight="600">Tai file khung nang luc so</text>
+  <text x="594" y="506" fill="#94A3B8" font-family="Inter, Arial, sans-serif" font-size="16">Tai lieu tham khao neu co</text>
+  <text x="565" y="545" fill="#94A3B8" font-family="Inter, Arial, sans-serif" font-size="16">Tuy chon, giup AI xac dinh chinh xac hon</text>
+
+  <rect x="76" y="586" width="780" height="74" rx="12" fill="#3B82F6" fill-opacity="0.08" stroke="#1E3A5F"/>
+  <text x="100" y="618" fill="#60A5FA" font-family="Inter, Arial, sans-serif" font-size="20" font-weight="600">Tuy chon nang cao</text>
+  <rect x="100" y="622" width="720" height="42" rx="10" fill="#22C55E" fill-opacity="0.1" stroke="#22C55E" stroke-opacity="0.35"/>
+  <rect x="116" y="634" width="18" height="18" rx="4" fill="#1F2937" stroke="#94A3B8"/>
+  <text x="146" y="647" fill="#22C55E" font-family="Inter, Arial, sans-serif" font-size="16" font-weight="600">Them nang luc tri tue nhan tao vao giao an</text>
+
+  <text x="706" y="690" fill="#60A5FA" font-family="Inter, Arial, sans-serif" font-size="18">Cau hinh API Key</text>
+  <rect x="60" y="700" width="812" height="44" rx="12" fill="url(#blueBtn)"/>
+  <text x="346" y="728" fill="white" font-family="Inter, Arial, sans-serif" font-size="20" font-weight="700">BAT DAU SOAN GIAO AN</text>
+
+  <rect x="936" y="108" width="308" height="290" rx="22" fill="url(#sidebarBg)" stroke="#2563EB"/>
+  <text x="966" y="158" fill="#FBBF24" font-family="Inter, Arial, sans-serif" font-size="24" font-weight="700">Huong dan nhanh</text>
+  <circle cx="988" cy="212" r="12" fill="#3B82F6"/>
+  <circle cx="988" cy="272" r="12" fill="#3B82F6"/>
+  <circle cx="988" cy="338" r="12" fill="#3B82F6"/>
+  <text x="982" y="217" fill="white" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="700">1</text>
+  <text x="982" y="277" fill="white" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="700">2</text>
+  <text x="982" y="343" fill="white" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="700">3</text>
+  <text x="1014" y="216" fill="#E2E8F0" font-family="Inter, Arial, sans-serif" font-size="18">Chon mon hoc va khoi lop.</text>
+  <text x="1014" y="271" fill="#FBBF24" font-family="Inter, Arial, sans-serif" font-size="18" font-weight="700">Bat buoc: tai len giao an</text>
+  <text x="1014" y="296" fill="#E2E8F0" font-family="Inter, Arial, sans-serif" font-size="18">docx hoac pdf.</text>
+  <text x="1014" y="341" fill="#94A3B8" font-family="Inter, Arial, sans-serif" font-size="16">Tuy chon tai file khung nang luc so</text>
+  <text x="1014" y="363" fill="#94A3B8" font-family="Inter, Arial, sans-serif" font-size="16">de AI tham khao them.</text>
+
+  <rect x="936" y="430" width="308" height="220" rx="22" fill="#111B2C" stroke="#1E3A5F"/>
+  <text x="966" y="478" fill="#60A5FA" font-family="Inter, Arial, sans-serif" font-size="24" font-weight="700">Mien nang luc so</text>
+  <circle cx="978" cy="528" r="5" fill="#22C55E"/>
+  <circle cx="978" cy="574" r="5" fill="#22C55E"/>
+  <circle cx="978" cy="620" r="5" fill="#22C55E"/>
+  <text x="1000" y="534" fill="#94A3B8" font-family="Inter, Arial, sans-serif" font-size="18">Khai thac du lieu va thong tin</text>
+  <text x="1000" y="580" fill="#94A3B8" font-family="Inter, Arial, sans-serif" font-size="18">Giao tiep va Hop tac</text>
+  <text x="1000" y="626" fill="#94A3B8" font-family="Inter, Arial, sans-serif" font-size="18">Sang tao noi dung so</text>
+</svg>
