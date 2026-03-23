@@ -57,6 +57,24 @@ const TEACHING_METHODS = [
   'Trò chơi học tập',
   'Sơ đồ tư duy'
 ];
+const MODEL_OPTIONS = [
+  {
+    value: 'gemini-3-flash-preview',
+    label: 'Gemini 3 Flash (Preview)',
+    description: 'Nhanh nhất, tiết kiệm (Khuyên dùng)',
+    badge: 'DEFAULT'
+  },
+  {
+    value: 'gemini-3-pro-preview',
+    label: 'Gemini 3 Pro (Preview)',
+    description: 'Cân bằng tốc độ và chất lượng'
+  },
+  {
+    value: 'gemini-2.5-flash',
+    label: 'Gemini 2.5 Flash',
+    description: 'Ổn định, thế hệ trước'
+  }
+];
 
 const ACCOUNTS: Account[] = [
   { username: 'VIETHUNG', password: '123456', displayName: 'VIETHUNG' }
@@ -139,6 +157,10 @@ function maskSecret(value: string) {
   if (value.length <= 8) return '********';
 
   return `${value.slice(0, 4)}****${value.slice(-4)}`;
+}
+
+function getModelDisplayName(model: string) {
+  return MODEL_OPTIONS.find(option => option.value === model)?.label ?? model;
 }
 
 export default function App() {
@@ -630,7 +652,7 @@ export default function App() {
                   {apiKey ? `Đã lưu: ${maskSecret(apiKey)}` : 'Chưa có API key lưu trong trình duyệt này.'}
                 </p>
                 <p className="mt-1 text-sm text-slate-700">
-                  Model: <span className="font-semibold">{modelName}</span>
+                  Model: <span className="font-semibold">{getModelDisplayName(modelName)}</span>
                 </p>
               </div>
 
@@ -770,7 +792,7 @@ export default function App() {
                     {apiKey ? `Đã lưu: ${maskSecret(apiKey)}` : 'Chưa có API key nào được lưu.'}
                   </p>
                   <p className="mt-1 text-sm text-slate-700">
-                    Model: <span className="font-semibold">{modelName}</span>
+                    Model: <span className="font-semibold">{getModelDisplayName(modelName)}</span>
                   </p>
                 </div>
 
@@ -788,31 +810,18 @@ export default function App() {
 
                 <div className="space-y-1.5">
                   <label className="text-xs font-bold uppercase tracking-wide text-slate-500">Model API</label>
-                  <select
-                    value={modelDraft === DEFAULT_MODEL ? DEFAULT_MODEL : 'custom'}
-                    onChange={(event) => {
-                      if (event.target.value === 'custom') {
-                        setModelDraft('');
-                        return;
-                      }
-
-                      setModelDraft(event.target.value);
-                    }}
-                    className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none transition-all focus:border-indigo-400 focus:bg-white focus:ring-2 focus:ring-indigo-200"
-                  >
-                    <option value={DEFAULT_MODEL}>Gemini 3 Flash Preview</option>
-                    <option value="custom">Tự nhập model khác</option>
-                  </select>
-
-                  {(modelDraft !== DEFAULT_MODEL || !modelDraft) && (
-                    <input
-                      type="text"
-                      value={modelDraft}
-                      onChange={(event) => setModelDraft(event.target.value)}
-                      className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none transition-all focus:border-indigo-400 focus:bg-white focus:ring-2 focus:ring-indigo-200"
-                      placeholder="Ví dụ: gemini-3-flash-preview"
-                    />
-                  )}
+                  <div className="space-y-3">
+                    {MODEL_OPTIONS.map(option => (
+                      <ModelOptionCard
+                        key={option.value}
+                        label={option.label}
+                        description={option.description}
+                        badge={option.badge}
+                        checked={modelDraft === option.value}
+                        onSelect={() => setModelDraft(option.value)}
+                      />
+                    ))}
+                  </div>
 
                   <p className="text-xs leading-5 text-slate-500">
                     Model đã chọn sẽ được dùng cho tất cả lần tạo bài dạy tiếp theo.
@@ -905,6 +914,59 @@ function MethodToggle({
         )}
       >
         <Check size={14} />
+      </span>
+    </button>
+  );
+}
+
+function ModelOptionCard({
+  label,
+  description,
+  badge,
+  checked,
+  onSelect
+}: {
+  label: string;
+  description: string;
+  badge?: string;
+  checked: boolean;
+  onSelect: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onSelect}
+      className={cn(
+        "flex w-full items-center gap-4 rounded-3xl border px-4 py-4 text-left transition-all",
+        checked
+          ? "border-emerald-400 bg-emerald-950/10 ring-1 ring-emerald-400/60"
+          : "border-slate-200 bg-white hover:border-indigo-200 hover:bg-slate-50"
+      )}
+    >
+      <span
+        className={cn(
+          "inline-flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full border",
+          checked ? "border-emerald-500" : "border-slate-300"
+        )}
+      >
+        <span
+          className={cn(
+            "h-2.5 w-2.5 rounded-full transition-all",
+            checked ? "bg-emerald-500" : "bg-transparent"
+          )}
+        />
+      </span>
+
+      <span className="min-w-0 flex-1">
+        <span className="flex items-center gap-2">
+          <span className="text-base font-bold text-slate-900">{label}</span>
+          {badge && (
+            <span className="rounded-md bg-cyan-100 px-2 py-0.5 text-[10px] font-black uppercase tracking-wide text-cyan-700">
+              {badge}
+            </span>
+          )}
+        </span>
+        <span className="mt-1 block text-sm text-slate-500">{description}</span>
       </span>
     </button>
   );
