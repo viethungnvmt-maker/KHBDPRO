@@ -49,13 +49,23 @@ const SUBJECTS = [
 
 const GRADES = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'];
 const BOOK_SERIES = ['Kết nối tri thức', 'Chân trời sáng tạo', 'Cánh diều', 'Khác'];
+const TEACHING_METHODS = [
+  'Thảo luận nhóm',
+  'Dạy học hợp tác',
+  'Vấn đáp gợi mở',
+  'Giải quyết vấn đề',
+  'Trò chơi học tập',
+  'Sơ đồ tư duy'
+];
 
 const ACCOUNTS: Account[] = [
   { username: 'VIETHUNG', password: '123456', displayName: 'VIETHUNG' }
 ];
 
 const API_KEY_STORAGE_KEY = 'khbd-pro-api-key';
+const MODEL_STORAGE_KEY = 'khbd-pro-model-name';
 const SESSION_STORAGE_KEY = 'khbd-pro-session-user';
+const DEFAULT_MODEL = 'gemini-3-flash-preview';
 
 function readStoredValue(key: string) {
   if (typeof window === 'undefined') return '';
@@ -141,33 +151,41 @@ export default function App() {
   const [options, setOptions] = useState({
     digitalCompetency: true,
     warmUp: true,
-    activeMethod: true,
     consolidation: true,
     aiIntegration: true
   });
+  const [selectedMethods, setSelectedMethods] = useState<string[]>([
+    'Thảo luận nhóm',
+    'Dạy học hợp tác',
+    'Vấn đáp gợi mở'
+  ]);
   const [result, setResult] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [copySuccess, setCopySuccess] = useState(false);
   const [currentUser, setCurrentUser] = useState<SessionUser | null>(() => readStoredUser());
   const [loginForm, setLoginForm] = useState({
-    username: ACCOUNTS[0]?.username ?? '',
-    password: ACCOUNTS[0]?.password ?? ''
+    username: '',
+    password: ''
   });
   const [loginError, setLoginError] = useState('');
   const [apiKey, setApiKey] = useState(() => readStoredValue(API_KEY_STORAGE_KEY));
   const [apiKeyDraft, setApiKeyDraft] = useState(() => readStoredValue(API_KEY_STORAGE_KEY));
+  const [modelName, setModelName] = useState(() => readStoredValue(MODEL_STORAGE_KEY) || DEFAULT_MODEL);
+  const [modelDraft, setModelDraft] = useState(() => readStoredValue(MODEL_STORAGE_KEY) || DEFAULT_MODEL);
   const [isApiKeyModalOpen, setIsApiKeyModalOpen] = useState(false);
 
   useEffect(() => {
     if (isApiKeyModalOpen) {
       setApiKeyDraft(apiKey);
+      setModelDraft(modelName);
     }
-  }, [apiKey, isApiKeyModalOpen]);
+  }, [apiKey, isApiKeyModalOpen, modelName]);
 
   const handleGenerate = async () => {
     if (!lessonName || !coreContent) return;
 
     const activeApiKey = apiKey.trim() || getInjectedApiKey();
+    const activeModel = modelName.trim() || DEFAULT_MODEL;
     if (!activeApiKey) {
       setResult('Vui lòng cài đặt API Key trước khi tạo bài dạy.');
       setIsApiKeyModalOpen(true);
@@ -193,7 +211,7 @@ export default function App() {
         ${options.digitalCompetency ? '- Tích hợp Năng lực số (theo CV 3456)' : ''}
         ${options.aiIntegration ? '- Tích hợp ứng dụng Trí tuệ nhân tạo (AI) vào dạy và học' : ''}
         ${options.warmUp ? '- Có hoạt động Khởi động sôi nổi' : ''}
-        ${options.activeMethod ? '- Sử dụng các Phương pháp dạy học tích cực' : ''}
+        ${selectedMethods.length > 0 ? `- Sử dụng các phương pháp dạy học: ${selectedMethods.join(', ')}` : ''}
         ${options.consolidation ? '- Có bộ câu hỏi Củng cố bài học' : ''}
 
         Yêu cầu cấu trúc bài soạn gồm các hoạt động chính:
@@ -209,7 +227,7 @@ export default function App() {
       `;
 
       const response = await ai.models.generateContent({
-        model: "gemini-3-flash-preview",
+        model: activeModel,
         contents: prompt,
       });
 
@@ -250,6 +268,12 @@ export default function App() {
     setResult('');
   };
 
+  const toggleMethod = (method: string) => {
+    setSelectedMethods(prev =>
+      prev.includes(method) ? prev.filter(item => item !== method) : [...prev, method]
+    );
+  };
+
   const handleLogin = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
@@ -273,8 +297,8 @@ export default function App() {
   const handleLogout = () => {
     setCurrentUser(null);
     setLoginForm({
-      username: ACCOUNTS[0]?.username ?? '',
-      password: ACCOUNTS[0]?.password ?? ''
+      username: '',
+      password: ''
     });
     setLoginError('');
     setResult('');
@@ -285,8 +309,12 @@ export default function App() {
     event.preventDefault();
 
     const nextValue = apiKeyDraft.trim();
+    const nextModel = modelDraft.trim() || DEFAULT_MODEL;
+
     setApiKey(nextValue);
+    setModelName(nextModel);
     writeStoredValue(API_KEY_STORAGE_KEY, nextValue);
+    writeStoredValue(MODEL_STORAGE_KEY, nextModel);
     setIsApiKeyModalOpen(false);
   };
 
@@ -567,15 +595,42 @@ export default function App() {
                   <OptionCard icon={<Cpu size={16} />} label="Năng lực số" subLabel="Theo CV 3456" checked={options.digitalCompetency} onChange={() => setOptions(prev => ({ ...prev, digitalCompetency: !prev.digitalCompetency }))} />
                   <OptionCard icon={<Zap size={16} />} label="Tích hợp AI" subLabel="Ứng dụng AI" checked={options.aiIntegration} onChange={() => setOptions(prev => ({ ...prev, aiIntegration: !prev.aiIntegration }))} />
                   <OptionCard icon={<Zap size={16} />} label="Khởi động" subLabel="Sôi nổi" checked={options.warmUp} onChange={() => setOptions(prev => ({ ...prev, warmUp: !prev.warmUp }))} />
-                  <OptionCard icon={<Lightbulb size={16} />} label="Phương pháp" subLabel="Tích cực" checked={options.activeMethod} onChange={() => setOptions(prev => ({ ...prev, activeMethod: !prev.activeMethod }))} />
                   <OptionCard icon={<RefreshCw size={16} />} label="Củng cố" subLabel="Bộ câu hỏi" checked={options.consolidation} onChange={() => setOptions(prev => ({ ...prev, consolidation: !prev.consolidation }))} />
                 </div>
               </div>
 
+              <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                <div className="flex items-start gap-3">
+                  <div className="rounded-xl bg-indigo-100 p-2 text-indigo-600">
+                    <Lightbulb size={18} />
+                  </div>
+                  <div>
+                    <h3 className="text-xs font-bold uppercase tracking-wide text-slate-700">Phương pháp</h3>
+                    <p className="mt-1 text-xs leading-5 text-slate-500">
+                      Chọn một hoặc nhiều phương pháp để AI ưu tiên khi soạn bài dạy.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="mt-4 grid gap-2">
+                  {TEACHING_METHODS.map(method => (
+                    <MethodToggle
+                      key={method}
+                      label={method}
+                      checked={selectedMethods.includes(method)}
+                      onToggle={() => toggleMethod(method)}
+                    />
+                  ))}
+                </div>
+              </div>
+
               <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
-                <p className="text-[11px] font-bold uppercase tracking-wide text-slate-500">Trạng thái API key</p>
+                <p className="text-[11px] font-bold uppercase tracking-wide text-slate-500">Trạng thái API</p>
                 <p className="mt-1 text-sm text-slate-700">
                   {apiKey ? `Đã lưu: ${maskSecret(apiKey)}` : 'Chưa có API key lưu trong trình duyệt này.'}
+                </p>
+                <p className="mt-1 text-sm text-slate-700">
+                  Model: <span className="font-semibold">{modelName}</span>
                 </p>
               </div>
 
@@ -701,7 +756,7 @@ export default function App() {
               <div className="flex items-start justify-between border-b border-slate-200 px-6 py-5">
                 <div>
                   <h2 className="text-lg font-bold text-slate-900">Cài đặt API Key</h2>
-                  <p className="mt-1 text-sm text-slate-500">Nhập Gemini API key để dùng nút tạo bài dạy ngay trong trình duyệt này.</p>
+                  <p className="mt-1 text-sm text-slate-500">Nhập Gemini API key và chọn model để dùng nút tạo bài dạy ngay trong trình duyệt này.</p>
                 </div>
                 <button type="button" onClick={() => setIsApiKeyModalOpen(false)} className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 text-slate-500 transition-colors hover:bg-slate-50 hover:text-slate-700" aria-label="Đóng">
                   <X size={16} />
@@ -713,6 +768,9 @@ export default function App() {
                   <p className="text-[11px] font-bold uppercase tracking-wide text-slate-500">Trạng thái hiện tại</p>
                   <p className="mt-1 text-sm text-slate-700">
                     {apiKey ? `Đã lưu: ${maskSecret(apiKey)}` : 'Chưa có API key nào được lưu.'}
+                  </p>
+                  <p className="mt-1 text-sm text-slate-700">
+                    Model: <span className="font-semibold">{modelName}</span>
                   </p>
                 </div>
 
@@ -726,6 +784,39 @@ export default function App() {
                     placeholder="Nhập API key..."
                   />
                   <p className="text-xs leading-5 text-slate-500">Khóa sẽ được lưu cục bộ trên thiết bị này để lần sau không cần nhập lại.</p>
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold uppercase tracking-wide text-slate-500">Model API</label>
+                  <select
+                    value={modelDraft === DEFAULT_MODEL ? DEFAULT_MODEL : 'custom'}
+                    onChange={(event) => {
+                      if (event.target.value === 'custom') {
+                        setModelDraft('');
+                        return;
+                      }
+
+                      setModelDraft(event.target.value);
+                    }}
+                    className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none transition-all focus:border-indigo-400 focus:bg-white focus:ring-2 focus:ring-indigo-200"
+                  >
+                    <option value={DEFAULT_MODEL}>Gemini 3 Flash Preview</option>
+                    <option value="custom">Tự nhập model khác</option>
+                  </select>
+
+                  {(modelDraft !== DEFAULT_MODEL || !modelDraft) && (
+                    <input
+                      type="text"
+                      value={modelDraft}
+                      onChange={(event) => setModelDraft(event.target.value)}
+                      className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none transition-all focus:border-indigo-400 focus:bg-white focus:ring-2 focus:ring-indigo-200"
+                      placeholder="Ví dụ: gemini-3-flash-preview"
+                    />
+                  )}
+
+                  <p className="text-xs leading-5 text-slate-500">
+                    Model đã chọn sẽ được dùng cho tất cả lần tạo bài dạy tiếp theo.
+                  </p>
                 </div>
 
                 <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
@@ -776,6 +867,45 @@ function OptionCard({
         </div>
         <p className="text-[9px] font-medium text-slate-400">{subLabel}</p>
       </div>
+    </button>
+  );
+}
+
+function MethodToggle({
+  label,
+  checked,
+  onToggle
+}: {
+  label: string;
+  checked: boolean;
+  onToggle: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onToggle}
+      className={cn(
+        "flex items-center justify-between rounded-2xl border px-4 py-3 text-left transition-all",
+        checked
+          ? "border-indigo-200 bg-white ring-1 ring-indigo-200"
+          : "border-slate-200 bg-white hover:border-indigo-200"
+      )}
+    >
+      <div>
+        <p className={cn("text-sm font-semibold", checked ? "text-indigo-900" : "text-slate-700")}>{label}</p>
+        <p className="mt-0.5 text-[11px] text-slate-400">
+          {checked ? 'Đã chọn cho bài dạy' : 'Nhấn để thêm vào bài dạy'}
+        </p>
+      </div>
+
+      <span
+        className={cn(
+          "inline-flex h-6 w-6 items-center justify-center rounded-full border transition-all",
+          checked ? "border-indigo-600 bg-indigo-600 text-white" : "border-slate-300 bg-white text-transparent"
+        )}
+      >
+        <Check size={14} />
+      </span>
     </button>
   );
 }
