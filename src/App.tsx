@@ -301,12 +301,7 @@ export default function App() {
       <div className="min-h-screen bg-slate-100 p-4 text-slate-800 md:p-8">
         <div className="mx-auto grid max-w-5xl gap-6 lg:grid-cols-[1.1fr_0.9fr]">
           <section className="rounded-3xl border border-indigo-100 bg-white p-6 shadow-xl shadow-indigo-100/60 md:p-8">
-            <div className="inline-flex items-center gap-2 rounded-full border border-amber-300 bg-gradient-to-r from-amber-500 to-yellow-400 px-3.5 py-2 text-sm font-semibold text-slate-900">
-              <Gem size={14} className="text-amber-950" />
-              <span>VIP đã kích hoạt</span>
-            </div>
-
-            <div className="mt-6 flex items-start gap-4">
+            <div className="flex items-start gap-4">
               <div className="rounded-2xl bg-indigo-600 p-3 text-white shadow-lg shadow-indigo-200">
                 <BookOpen size={28} />
               </div>
@@ -322,34 +317,44 @@ export default function App() {
 
             <div className="mt-8 rounded-3xl border border-slate-200 bg-slate-50 p-5">
               <div className="flex items-center gap-2">
-                <UserRound size={18} className="text-indigo-600" />
-                <h2 className="text-sm font-bold uppercase tracking-wide text-slate-800">
-                  Danh sách tài khoản và mật khẩu
-                </h2>
+                <PhoneContactIcon />
+                <h2 className="text-sm font-bold uppercase tracking-wide text-slate-800">Liên hệ thầy Hùng để sử dụng</h2>
               </div>
 
-              <div className="mt-4 space-y-3">
-                {ACCOUNTS.map((account, index) => (
-                  <div
-                    key={account.username}
-                    className="flex flex-col gap-3 rounded-2xl border border-slate-200 bg-white p-4 md:flex-row md:items-center md:justify-between"
-                  >
-                    <div>
-                      <p className="text-sm font-bold text-slate-900">
-                        {index === 0 ? 'Tài khoản đầu tiên' : `Tài khoản ${index + 1}`}
-                      </p>
-                      <p className="mt-1 text-xs text-slate-500">
-                        Tên đăng nhập: <span className="font-semibold text-slate-700">{account.username}</span>
-                      </p>
-                    </div>
-                    <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-semibold text-slate-700">
-                      <span>Mật khẩu:</span>
-                      <span className="rounded-full bg-slate-900 px-2.5 py-1 text-[11px] tracking-[0.2em] text-white">
-                        {account.password}
-                      </span>
-                    </div>
+              <p className="mt-3 text-sm leading-6 text-slate-600">
+                Liên hệ trực tiếp qua Facebook hoặc Zalo để được hỗ trợ sử dụng hệ thống.
+              </p>
+
+              <div className="mt-5 grid gap-3 sm:grid-cols-2">
+                <a
+                  href="https://fb.com/viethungnvmt"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white p-4 transition-all hover:-translate-y-0.5 hover:border-blue-200 hover:shadow-md"
+                >
+                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#1877F2] text-white shadow-sm">
+                    <FacebookLogo />
                   </div>
-                ))}
+                  <div>
+                    <p className="text-sm font-bold text-slate-900">Facebook</p>
+                    <p className="text-xs text-slate-500">fb.com/viethungnvmt</p>
+                  </div>
+                </a>
+
+                <a
+                  href="https://zalo.me/0363831337"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white p-4 transition-all hover:-translate-y-0.5 hover:border-cyan-200 hover:shadow-md"
+                >
+                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#0A7CFF] text-white shadow-sm">
+                    <ZaloLogo />
+                  </div>
+                  <div>
+                    <p className="text-sm font-bold text-slate-900">Zalo</p>
+                    <p className="text-xs text-slate-500">zalo.me/0363831337</p>
+                  </div>
+                </a>
               </div>
             </div>
           </section>
@@ -411,8 +416,8 @@ export default function App() {
             </form>
 
             <div className="mt-6 rounded-2xl border border-indigo-100 bg-indigo-50 p-4 text-sm leading-6 text-indigo-800">
-              Tài khoản đầu tiên là <span className="font-bold">VIETHUNG</span> với mật khẩu <span className="font-bold">123456</span>.
-              Khi đăng nhập thành công, tên <span className="font-bold">VIETHUNG</span> sẽ hiện ở header.
+              Nếu cần hỗ trợ sử dụng hoặc cấp tài khoản, vui lòng liên hệ thầy Hùng ở các nút bên trái.
+              Sau khi đăng nhập thành công, tên người dùng sẽ tự hiển thị ở header.
             </div>
           </section>
         </div>
@@ -772,5 +777,33 @@ function OptionCard({
         <p className="text-[9px] font-medium text-slate-400">{subLabel}</p>
       </div>
     </button>
+  );
+}
+
+function PhoneContactIcon() {
+  return (
+    <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-indigo-100 text-indigo-600">
+      <svg viewBox="0 0 24 24" className="h-4 w-4 fill-none stroke-current" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72l.34 2.74a2 2 0 0 1-.57 1.72L7.09 9.91a16 16 0 0 0 7 7l1.73-1.79a2 2 0 0 1 1.72-.57l2.74.34A2 2 0 0 1 22 16.92Z" />
+      </svg>
+    </span>
+  );
+}
+
+function FacebookLogo() {
+  return (
+    <svg viewBox="0 0 24 24" className="h-5 w-5 fill-current" aria-hidden="true">
+      <path d="M13.5 21v-7.2h2.4l.36-2.8H13.5V9.21c0-.81.22-1.37 1.38-1.37H16.5V5.33c-.78-.08-1.56-.12-2.34-.12-2.32 0-3.91 1.42-3.91 4.02V11H7.8v2.8h2.45V21h3.25Z" />
+    </svg>
+  );
+}
+
+function ZaloLogo() {
+  return (
+    <svg viewBox="0 0 64 64" className="h-6 w-6" aria-hidden="true">
+      <rect x="6" y="10" width="52" height="44" rx="14" fill="white" />
+      <path d="M20 23h24v5L28 41h16v5H20v-5l16-13H20v-5Z" fill="#0A7CFF" />
+      <circle cx="48" cy="22" r="4" fill="#0A7CFF" />
+    </svg>
   );
 }
