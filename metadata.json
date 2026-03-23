@@ -1,0 +1,5 @@
+{
+  "name": "KHBD AI - Trợ lý soạn giáo án",
+  "description": "Ứng dụng hỗ trợ giáo viên soạn kế hoạch bài dạy (giáo án) tự động bằng trí tuệ nhân tạo Gemini, theo chuẩn Công văn 5512.",
+  "requestFramePermissions": []
+}
