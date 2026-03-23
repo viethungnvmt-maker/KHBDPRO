@@ -49,13 +49,41 @@ const SUBJECTS = [
 
 const GRADES = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'];
 const BOOK_SERIES = ['Kết nối tri thức', 'Chân trời sáng tạo', 'Cánh diều', 'Khác'];
-const TEACHING_METHODS = [
-  'Thảo luận nhóm',
-  'Dạy học hợp tác',
-  'Vấn đáp gợi mở',
-  'Giải quyết vấn đề',
-  'Trò chơi học tập',
-  'Sơ đồ tư duy'
+const ACTIVE_METHOD_OPTIONS = [
+  { label: 'Thảo luận nhóm', description: 'Tăng tương tác và hợp tác giữa học sinh.' },
+  { label: 'Dạy học hợp tác', description: 'Học sinh phối hợp theo vai trò và nhiệm vụ chung.' },
+  { label: 'Dạy học dự án', description: 'Gắn kiến thức với sản phẩm hoặc nhiệm vụ thực tiễn.' },
+  { label: 'Dạy học giải quyết vấn đề', description: 'Khuyến khích phân tích và xử lý tình huống học tập.' },
+  { label: 'Dạy học khám phá', description: 'Học sinh tự tìm tòi, quan sát và rút ra kiến thức.' },
+  { label: 'Dạy học theo trạm', description: 'Luân phiên hoạt động qua các điểm học tập khác nhau.' },
+  { label: 'Dạy học theo góc', description: 'Tổ chức nhiều góc hoạt động theo năng lực hoặc nhiệm vụ.' },
+  { label: 'Đóng vai', description: 'Nhập vai để hiểu nội dung, tình huống và kỹ năng giao tiếp.' },
+  { label: 'Trò chơi học tập', description: 'Tạo hứng thú và củng cố kiến thức qua trò chơi.' },
+  { label: 'Nghiên cứu tình huống', description: 'Phân tích tình huống cụ thể để rút ra bài học.' },
+  { label: 'Bàn tay nặn bột', description: 'Quan sát, dự đoán, thực nghiệm và kết luận.' },
+  { label: 'Dạy học trải nghiệm', description: 'Học qua hoạt động thực tế và trải nghiệm cá nhân.' },
+];
+const TRADITIONAL_METHOD_OPTIONS = [
+  { label: 'Thuyết trình', description: 'Giáo viên trình bày, hệ thống hóa nội dung kiến thức.' },
+  { label: 'Giảng giải minh họa', description: 'Kết hợp lời giảng với ví dụ, hình ảnh hoặc mô hình.' },
+  { label: 'Vấn đáp', description: 'Hỏi đáp để củng cố, kiểm tra và dẫn dắt nội dung.' },
+  { label: 'Đàm thoại gợi mở', description: 'Gợi ý từng bước để học sinh tự phát hiện kiến thức.' },
+  { label: 'Trực quan', description: 'Sử dụng tranh ảnh, vật thật, sơ đồ, mô hình minh họa.' },
+  { label: 'Luyện tập - thực hành', description: 'Củng cố qua thao tác lặp lại và hệ thống bài tập.' },
+  { label: 'Làm mẫu', description: 'Giáo viên biểu diễn trước để học sinh quan sát và làm theo.' },
+  { label: 'Kể chuyện', description: 'Truyền tải nội dung bằng câu chuyện hoặc ví dụ minh họa.' },
+];
+const ACTIVE_SUPPORT_TECHNIQUES = [
+  { label: 'Kỹ thuật Khăn phủ bàn', description: 'Thảo luận cá nhân kết hợp nhóm nhỏ.' },
+  { label: 'Kỹ thuật Mảnh ghép', description: 'Chia sẻ kiến thức theo các chủ đề khác nhau.' },
+  { label: 'Kỹ thuật Sơ đồ tư duy', description: 'Tổng hợp, hệ thống kiến thức.' },
+  { label: 'Kỹ thuật Động não (Brainstorming)', description: 'Huy động tối đa ý tưởng từ học sinh.' },
+  { label: 'Kỹ thuật Bể cá (Fishbowl)', description: 'Nhóm thảo luận trong khi nhóm khác quan sát.' },
+];
+const INNOVATION_METHOD_OPTIONS = [
+  { label: 'Cá nhân hóa', description: 'Thiết kế phương pháp học tập phù hợp với từng đối tượng học sinh.' },
+  { label: 'Chuyển đổi số', description: 'Sử dụng công nghệ thông tin trong bài giảng.' },
+  { label: 'Đánh giá tích cực', description: 'Tích hợp đánh giá vào quá trình học thay vì chỉ đánh giá cuối kỳ.' },
 ];
 const MODEL_OPTIONS = [
   {
@@ -181,6 +209,11 @@ export default function App() {
     'Dạy học hợp tác',
     'Vấn đáp gợi mở'
   ]);
+  const [selectedTechniques, setSelectedTechniques] = useState<string[]>([]);
+  const [selectedInnovations, setSelectedInnovations] = useState<string[]>([
+    'Cá nhân hóa',
+    'Chuyển đổi số'
+  ]);
   const [result, setResult] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [copySuccess, setCopySuccess] = useState(false);
@@ -234,6 +267,8 @@ export default function App() {
         ${options.aiIntegration ? '- Tích hợp ứng dụng Trí tuệ nhân tạo (AI) vào dạy và học' : ''}
         ${options.warmUp ? '- Có hoạt động Khởi động sôi nổi' : ''}
         ${selectedMethods.length > 0 ? `- Sử dụng các phương pháp dạy học: ${selectedMethods.join(', ')}` : ''}
+        ${selectedTechniques.length > 0 ? `- Áp dụng các kỹ thuật dạy học hỗ trợ tích cực: ${selectedTechniques.join(', ')}` : ''}
+        ${selectedInnovations.length > 0 ? `- Đổi mới phương pháp dạy học theo định hướng: ${selectedInnovations.join(', ')}` : ''}
         ${options.consolidation ? '- Có bộ câu hỏi Củng cố bài học' : ''}
 
         Yêu cầu cấu trúc bài soạn gồm các hoạt động chính:
@@ -290,10 +325,11 @@ export default function App() {
     setResult('');
   };
 
-  const toggleMethod = (method: string) => {
-    setSelectedMethods(prev =>
-      prev.includes(method) ? prev.filter(item => item !== method) : [...prev, method]
-    );
+  const toggleSelection = (
+    value: string,
+    setter: React.Dispatch<React.SetStateAction<string[]>>
+  ) => {
+    setter(prev => (prev.includes(value) ? prev.filter(item => item !== value) : [...prev, value]));
   };
 
   const handleLogin = (event: React.FormEvent<HTMLFormElement>) => {
@@ -629,18 +665,99 @@ export default function App() {
                   <div>
                     <h3 className="text-xs font-bold uppercase tracking-wide text-slate-700">Phương pháp</h3>
                     <p className="mt-1 text-xs leading-5 text-slate-500">
-                      Chọn một hoặc nhiều phương pháp để AI ưu tiên khi soạn bài dạy.
+                      Chọn một hoặc nhiều phương pháp dạy học tích cực và truyền thống để AI ưu tiên khi soạn bài dạy.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="mt-4 space-y-5">
+                  <div>
+                    <p className="mb-3 text-xs font-bold uppercase tracking-wide text-slate-500">
+                      Phương pháp dạy học tích cực
+                    </p>
+                    <div className="grid gap-2 md:grid-cols-2">
+                      {ACTIVE_METHOD_OPTIONS.map(method => (
+                        <MethodToggle
+                          key={method.label}
+                          label={method.label}
+                          description={method.description}
+                          checked={selectedMethods.includes(method.label)}
+                          onToggle={() => toggleSelection(method.label, setSelectedMethods)}
+                        />
+                      ))}
+                    </div>
+                  </div>
+
+                  <div>
+                    <p className="mb-3 text-xs font-bold uppercase tracking-wide text-slate-500">
+                      Phương pháp dạy học truyền thống
+                    </p>
+                    <div className="grid gap-2 md:grid-cols-2">
+                      {TRADITIONAL_METHOD_OPTIONS.map(method => (
+                        <MethodToggle
+                          key={method.label}
+                          label={method.label}
+                          description={method.description}
+                          checked={selectedMethods.includes(method.label)}
+                          onToggle={() => toggleSelection(method.label, setSelectedMethods)}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                <div className="flex items-start gap-3">
+                  <div className="rounded-xl bg-cyan-100 p-2 text-cyan-700">
+                    <RefreshCw size={18} />
+                  </div>
+                  <div>
+                    <h3 className="text-xs font-bold uppercase tracking-wide text-slate-700">
+                      Các kỹ thuật dạy học hỗ trợ tích cực
+                    </h3>
+                    <p className="mt-1 text-xs leading-5 text-slate-500">
+                      Chọn các kỹ thuật hỗ trợ để tăng tương tác, chia sẻ và hệ thống hóa kiến thức.
                     </p>
                   </div>
                 </div>
 
                 <div className="mt-4 grid gap-2">
-                  {TEACHING_METHODS.map(method => (
+                  {ACTIVE_SUPPORT_TECHNIQUES.map(technique => (
                     <MethodToggle
-                      key={method}
-                      label={method}
-                      checked={selectedMethods.includes(method)}
-                      onToggle={() => toggleMethod(method)}
+                      key={technique.label}
+                      label={technique.label}
+                      description={technique.description}
+                      checked={selectedTechniques.includes(technique.label)}
+                      onToggle={() => toggleSelection(technique.label, setSelectedTechniques)}
+                    />
+                  ))}
+                </div>
+              </div>
+
+              <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                <div className="flex items-start gap-3">
+                  <div className="rounded-xl bg-emerald-100 p-2 text-emerald-700">
+                    <Cpu size={18} />
+                  </div>
+                  <div>
+                    <h3 className="text-xs font-bold uppercase tracking-wide text-slate-700">
+                      Đổi mới phương pháp dạy học
+                    </h3>
+                    <p className="mt-1 text-xs leading-5 text-slate-500">
+                      Chọn các định hướng đổi mới để bài dạy phù hợp với yêu cầu hiện đại hóa dạy học.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="mt-4 grid gap-2">
+                  {INNOVATION_METHOD_OPTIONS.map(item => (
+                    <MethodToggle
+                      key={item.label}
+                      label={item.label}
+                      description={item.description}
+                      checked={selectedInnovations.includes(item.label)}
+                      onToggle={() => toggleSelection(item.label, setSelectedInnovations)}
                     />
                   ))}
                 </div>
@@ -882,10 +999,12 @@ function OptionCard({
 
 function MethodToggle({
   label,
+  description,
   checked,
   onToggle
 }: {
   label: string;
+  description: string;
   checked: boolean;
   onToggle: () => void;
 }) {
@@ -902,9 +1021,7 @@ function MethodToggle({
     >
       <div>
         <p className={cn("text-sm font-semibold", checked ? "text-indigo-900" : "text-slate-700")}>{label}</p>
-        <p className="mt-0.5 text-[11px] text-slate-400">
-          {checked ? 'Đã chọn cho bài dạy' : 'Nhấn để thêm vào bài dạy'}
-        </p>
+        <p className="mt-0.5 text-[11px] leading-5 text-slate-400">{description}</p>
       </div>
 
       <span
