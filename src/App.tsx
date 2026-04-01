@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { GoogleGenAI } from "@google/genai";
 import ReactMarkdown from 'react-markdown';
 import {
@@ -41,6 +41,11 @@ type Account = {
 };
 
 type SessionUser = Pick<Account, 'username' | 'displayName'>;
+type GenerateNoticeTone = 'info' | 'error' | 'success';
+type GenerateNotice = {
+  tone: GenerateNoticeTone;
+  message: string;
+} | null;
 
 const SUBJECTS = [
   'Tin học', 'Toán học', 'Ngữ văn', 'Tiếng Anh', 'Vật lý', 'Hóa học',
@@ -228,6 +233,8 @@ export default function App() {
   const [modelName, setModelName] = useState(() => readStoredValue(MODEL_STORAGE_KEY) || DEFAULT_MODEL);
   const [modelDraft, setModelDraft] = useState(() => readStoredValue(MODEL_STORAGE_KEY) || DEFAULT_MODEL);
   const [isApiKeyModalOpen, setIsApiKeyModalOpen] = useState(false);
+  const [generateNotice, setGenerateNotice] = useState<GenerateNotice>(null);
+  const resultSectionRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
     if (isApiKeyModalOpen) {
@@ -236,19 +243,52 @@ export default function App() {
     }
   }, [apiKey, isApiKeyModalOpen, modelName]);
 
+  const scrollToResultSection = () => {
+    if (typeof window === 'undefined') return;
+
+    window.requestAnimationFrame(() => {
+      resultSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  };
+
   const handleGenerate = async () => {
-    if (!lessonName || !coreContent) return;
+    const trimmedLessonName = lessonName.trim();
+    const trimmedCoreContent = coreContent.trim();
+
+    if (!trimmedLessonName || !trimmedCoreContent) {
+      const missingFields = [
+        !trimmedLessonName ? 'tên bài soạn' : '',
+        !trimmedCoreContent ? 'nội dung cốt lõi' : ''
+      ].filter(Boolean);
+
+      setResult('');
+      setGenerateNotice({
+        tone: 'error',
+        message: `Vui lòng nhập ${missingFields.join(' và ')} trước khi tạo bài dạy.`
+      });
+      scrollToResultSection();
+      return;
+    }
 
     const activeApiKey = apiKey.trim() || getInjectedApiKey();
     const activeModel = modelName.trim() || DEFAULT_MODEL;
     if (!activeApiKey) {
-      setResult('Vui lòng cài đặt API Key trước khi tạo bài dạy.');
+      setResult('');
+      setGenerateNotice({
+        tone: 'error',
+        message: 'Vui lòng cài đặt API Key trước khi tạo bài dạy.'
+      });
       setIsApiKeyModalOpen(true);
       return;
     }
 
+    scrollToResultSection();
     setIsLoading(true);
     setResult('');
+    setGenerateNotice({
+      tone: 'info',
+      message: 'Đang gửi yêu cầu đến AI. Quá trình này thường mất khoảng 10-20 giây.'
+    });
 
     try {
       const ai = new GoogleGenAI({ apiKey: activeApiKey });
@@ -288,10 +328,25 @@ export default function App() {
         contents: prompt,
       });
 
-      setResult(response.text || 'Không có kết quả trả về.');
+      const responseText = typeof response.text === 'function' ? await response.text() : response.text;
+      const nextResult = responseText?.trim();
+
+      setResult(nextResult || 'Không có kết quả trả về.');
+      setGenerateNotice({
+        tone: nextResult ? 'success' : 'info',
+        message: nextResult
+          ? 'Bài dạy đã được tạo xong. Bạn có thể xem, sao chép hoặc tải file ở khung kết quả.'
+          : 'AI đã phản hồi nhưng chưa có nội dung hiển thị.'
+      });
     } catch (error) {
       console.error('Error generating lesson plan:', error);
-      setResult('Đã có lỗi xảy ra trong quá trình tạo bài dạy. Vui lòng thử lại.');
+      const errorMessage = error instanceof Error ? error.message : 'Đã có lỗi xảy ra trong quá trình tạo bài dạy. Vui lòng thử lại.';
+
+      setResult('');
+      setGenerateNotice({
+        tone: 'error',
+        message: `Tạo bài dạy chưa thành công. ${errorMessage}`
+      });
     } finally {
       setIsLoading(false);
     }
@@ -323,6 +378,7 @@ export default function App() {
     setLessonName('');
     setCoreContent('');
     setResult('');
+    setGenerateNotice(null);
   };
 
   const toggleSelection = (
@@ -360,6 +416,7 @@ export default function App() {
     });
     setLoginError('');
     setResult('');
+    setGenerateNotice(null);
     writeStoredUser(null);
   };
 
@@ -373,6 +430,7 @@ export default function App() {
     setModelName(nextModel);
     writeStoredValue(API_KEY_STORAGE_KEY, nextValue);
     writeStoredValue(MODEL_STORAGE_KEY, nextModel);
+    setGenerateNotice(null);
     setIsApiKeyModalOpen(false);
   };
 
@@ -775,6 +833,7 @@ export default function App() {
 
               <div className="space-y-3 pt-4">
                 <button
+                  type="button"
                   onClick={handleGenerate}
                   disabled={isLoading}
                   className={cn(
@@ -794,7 +853,21 @@ export default function App() {
                     </>
                   )}
                 </button>
+                {generateNotice && (
+                  <div
+                    aria-live="polite"
+                    className={cn(
+                      "rounded-xl border px-4 py-3 text-sm leading-6",
+                      generateNotice.tone === 'error' && "border-red-200 bg-red-50 text-red-700",
+                      generateNotice.tone === 'success' && "border-emerald-200 bg-emerald-50 text-emerald-700",
+                      generateNotice.tone === 'info' && "border-indigo-200 bg-indigo-50 text-indigo-700"
+                    )}
+                  >
+                    {generateNotice.message}
+                  </div>
+                )}
                 <button
+                  type="button"
                   onClick={handleClear}
                   className="flex w-full items-center justify-center gap-2 py-2 text-xs font-bold uppercase text-slate-500 transition-colors hover:text-red-500"
                 >
@@ -815,7 +888,7 @@ export default function App() {
           </div>
         </section>
 
-        <section className="space-y-6 lg:col-span-8">
+        <section ref={resultSectionRef} className="space-y-6 lg:col-span-8">
           <div className="flex min-h-[600px] flex-col rounded-2xl border border-slate-200 bg-white shadow-md">
             <div className="flex items-center justify-between border-b border-slate-200 bg-slate-50 px-5 py-4">
               <div className="flex items-center gap-2">
@@ -824,6 +897,7 @@ export default function App() {
               </div>
               <div className="flex items-center gap-2">
                 <button
+                  type="button"
                   onClick={handleCopy}
                   disabled={!result}
                   className={cn("flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-bold transition-all", result ? "border border-slate-200 bg-white text-slate-700 hover:bg-slate-50" : "cursor-not-allowed text-slate-300")}
@@ -832,6 +906,7 @@ export default function App() {
                   {copySuccess ? 'Đã sao chép' : 'SAO CHÉP'}
                 </button>
                 <button
+                  type="button"
                   onClick={handleDownload}
                   disabled={!result}
                   className={cn("flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-bold transition-all", result ? "bg-indigo-600 text-white hover:bg-indigo-700" : "cursor-not-allowed bg-slate-200 text-slate-400")}
@@ -870,6 +945,11 @@ export default function App() {
                     {result}
                   </ReactMarkdown>
                 </motion.div>
+              ) : generateNotice?.tone === 'error' ? (
+                <div className="rounded-2xl border border-red-200 bg-red-50 p-5 text-sm leading-6 text-red-700">
+                  <p className="font-bold">Chưa thể tạo bài dạy</p>
+                  <p className="mt-2">{generateNotice.message}</p>
+                </div>
               ) : (
                 <div className="flex h-full flex-col items-center justify-center space-y-4 py-20 text-slate-300">
                   <FileText size={80} strokeWidth={1} />
